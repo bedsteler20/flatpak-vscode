@@ -2,7 +2,7 @@
     "name": "flatpak",
     "displayName": "flatpak",
     "description": "",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "bedsteler20",
     "engines": {
         "vscode": "^1.86.0"
