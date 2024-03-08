@@ -1,0 +1,101 @@
+{
+    "name": "flatpak",
+    "displayName": "flatpak",
+    "description": "",
+    "version": "0.0.3",
+    "publisher": "bedsteler20",
+    "engines": {
+        "vscode": "^1.86.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "extensionKind": [
+        "ui"
+    ],
+    "enabledApiProposals": [
+        "resolvers",
+        "contribViewsRemote"
+    ],
+    "activationEvents": [
+        "onResolveRemoteAuthority:flatpak-host"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bedsteler20/flatpak-vscode.git"
+    },
+    "license": "GPL-3.0-only",
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "flatpak.openHostRemote",
+                "title": "Flatpak: Connect to Host OS"
+            },
+            {
+                "command": "flatpak.openCurrentFolderOnHost",
+                "title": "Flatpak: Open Current Folder on Host",
+                "enablement": "workspaceFolderCount > 0"
+            }
+        ],
+        "resourceLabelFormatters": [
+            {
+                "label": "flatpak-host",
+                "authority": "flatpak-host+*",
+                "formatting": {
+                    "label": "${path}",
+                    "separator": " - ",
+                    "sublabel": "${rootName}"
+                }
+            }
+        ],
+        "configuration": [
+            {
+                "title": "Flatpak",
+                "properties": {
+                    "bedsteler20.flatpak.hostShell": {
+                        "type": "string",
+                        "$comment": "The shell to use when spawning a host terminal",
+                        "default": "bash"
+                    }
+                }
+            }
+        ],
+        "terminal": {
+            "profiles": [
+                {
+                    "title": "Host Terminal",
+                    "id": "flatpak-host"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "vscode-test",
+        "postinstall": "npm run update-dts",
+        "update-dts": "npx vscode-dts dev && npx vscode-dts main"
+    },
+    "devDependencies": {
+        "@types/follow-redirects": "^1.14.4",
+        "@types/mocha": "^10.0.6",
+        "@types/node": "18.x",
+        "@types/tar": "^6.1.11",
+        "@typescript-eslint/eslint-plugin": "^7.0.2",
+        "@typescript-eslint/parser": "^7.0.2",
+        "@vscode/test-cli": "^0.0.6",
+        "@vscode/test-electron": "^2.3.9",
+        "eslint": "^8.56.0",
+        "semantic-release": "^23.0.2",
+        "typescript": "^5.3.3",
+        "vscode-dts": "^0.3.3"
+    },
+    "dependencies": {
+        "follow-redirects": "^1.15.5",
+        "tar": "^6.2.0"
+    }
+}
