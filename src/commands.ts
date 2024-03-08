@@ -1,6 +1,4 @@
 import * as vscode from "vscode";
-import { REMOTE_HOST_AUTHORITY } from "./hostAuthResolver";
-import { log } from "./logger";
 
 function openFlatpakHost() {
     vscode.commands.executeCommand('vscode.newWindow', {
@@ -14,7 +12,6 @@ function openCurrentFolderOnHost() {
     const url = vscode.Uri.parse(`vscode-remote://flatpak-host+${currentDir}`)
 
     vscode.commands.executeCommand("vscode.openFolder", url);
-
 }
 
 
@@ -23,5 +20,6 @@ export function registerCommands(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand("flatpak.openHostRemote", openFlatpakHost),
         vscode.commands.registerCommand("flatpak.openCurrentFolderOnHost", openCurrentFolderOnHost)
     ];
+    
     commands.forEach((command) => context.subscriptions.push(command))
 }

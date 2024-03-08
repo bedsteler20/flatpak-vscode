@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { Settings } from "./settings";
+import { Settings } from "../utils/settings";
 
 export class FlatpakHostTerminalProvider implements vscode.TerminalProfileProvider, vscode.Disposable {
     provideTerminalProfile(token: vscode.CancellationToken): vscode.ProviderResult<vscode.TerminalProfile> {

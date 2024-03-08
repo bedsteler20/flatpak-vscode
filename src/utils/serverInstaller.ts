@@ -1,15 +1,16 @@
-import {https} from 'follow-redirects';
+import { https } from 'follow-redirects';
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import tar, { r } from 'tar';
+import tar from 'tar';
 import { getServerInstallDir } from './utils';
-import { log } from './logger';
-import path from 'path';
+import { logger } from './logger';
+import { ProductJson, getVSCodeProductJson } from './vsUtils';
 
 export function downloadTarBall(url: string, outDir: string) {
     return new Promise<void>((resolve, reject) => {
         https.get(url, (res) => {
             if (res.statusCode !== 200) {
+                logger.error("Failed to download server. Status code:", res.statusCode);
                 reject(new Error("Failed to download server. Status code: " + res.statusCode));
                 return;
             }
@@ -63,43 +64,22 @@ async function getDownloadUrl(): Promise<string> {
 
 export async function downloadServer(context: vscode.ExtensionContext) {
     const url = await getDownloadUrl();
-    log("Server download url: " + url);
+    logger.log("Server download url: " + url);
     const installDir = getServerInstallDir(context);
 
     if (!fs.existsSync(installDir)) {
         fs.mkdirSync(installDir, { recursive: true });
     } else {
         if (fs.readdirSync(installDir).length > 0) {
-            log("Server already installed");
+            logger.log("Server already installed");
             return;
         }
-        log("server dir exists but no file were found in it")
+        logger.log("server dir exists but no file were found in it")
     }
 
-    log("Downloading server...");
+    logger.log("Downloading server...");
 
     await downloadTarBall(url, installDir);
 
-    log("server downloaded")
-}
-
-let vscodeProductJson: any;
-async function getVSCodeProductJson(): Promise<ProductJson> {
-    if (!vscodeProductJson) {
-        const productJsonStr = await fs.promises.readFile(path.join(vscode.env.appRoot, 'product.json'), 'utf8');
-        vscodeProductJson = JSON.parse(productJsonStr);
-    }
-
-    return vscodeProductJson;
-}
-
-export interface ProductJson {
-    version: string;
-    commit: string;
-    quality: string;
-    applicationName: string;
-    release?: string; // vscodium-like specific
-    serverApplicationName: string;
-    serverDataFolderName: string;
-    serverDownloadUrlTemplate?: string; // vscodium-like specific
+    logger.log("server downloaded")
 }

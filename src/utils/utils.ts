@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { https } from 'follow-redirects';
 
 export function getVscodeUserDir(context: vscode.ExtensionContext) {
     return path.join(context.globalStorageUri.fsPath, "..", "..", "..");

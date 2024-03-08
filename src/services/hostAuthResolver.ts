@@ -1,21 +1,21 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
-import { log } from './logger';
+import { logger } from '../utils/logger';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import path from 'path';
-import { getServerInstallDir, getVscodeUserDir } from './utils';
-import { downloadServer } from './serverInstaller';
+import { getServerInstallDir, getVscodeUserDir } from '../utils/utils';
+import { downloadServer } from '../utils/serverInstaller';
 
 export const REMOTE_HOST_AUTHORITY = "flatpak-host"
 
 export class FlatpakHostAuthResolver implements vscode.RemoteAuthorityResolver, vscode.Disposable {
     private _resourceLabel?: vscode.Disposable;
     public static serverProcess?: ChildProcessWithoutNullStreams;
-    constructor(readonly extensionContext: vscode.ExtensionContext) {}
+    constructor(readonly extensionContext: vscode.ExtensionContext) { }
 
 
     resolve(authority: string, context: vscode.RemoteAuthorityResolverContext): vscode.ResolverResult | Thenable<vscode.ResolverResult> {
-        log(`Resolving authority: ${authority}`);
+        logger.log(`Resolving authority: ${authority}`);
         return vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: "Flatpak Host Authentication",
@@ -36,7 +36,7 @@ export class FlatpakHostAuthResolver implements vscode.RemoteAuthorityResolver, 
             await downloadServer(this.extensionContext);
             await this.runServer();
             const resolvedResult: vscode.ResolverResult = new vscode.ResolvedAuthority('localhost', 8000);
-            
+
             return resolvedResult;
 
         });
@@ -47,13 +47,13 @@ export class FlatpakHostAuthResolver implements vscode.RemoteAuthorityResolver, 
     }
 
     private async runServer() {
-        const serverDir= getServerInstallDir(this.extensionContext);
-        log("Starting server")
+        const serverDir = getServerInstallDir(this.extensionContext);
+        logger.log("Starting server")
         if (FlatpakHostAuthResolver.serverProcess) {
-            log("server process exists")
+            logger.log("server process exists")
             return
         }
-         FlatpakHostAuthResolver.serverProcess = spawn("flatpak-spawn", [
+        FlatpakHostAuthResolver.serverProcess = spawn("flatpak-spawn", [
             "--watch-bus",
             "--host",
             path.join(serverDir, "node"),
@@ -85,6 +85,6 @@ export class FlatpakHostAuthResolver implements vscode.RemoteAuthorityResolver, 
         context.subscriptions.push(disposable2);
         context.subscriptions.push(self);
         context.subscriptions.push(disposable)
-        
+
     }
 }

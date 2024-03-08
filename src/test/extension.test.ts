@@ -5,7 +5,7 @@ import * as assert from 'assert';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { downloadTarBall } from '../serverInstaller';
+import { downloadTarBall } from '../utils/serverInstaller';
 import { execSync } from 'child_process';
 import * as vscode from 'vscode';
 // import * as myExtension from '../../extension';
