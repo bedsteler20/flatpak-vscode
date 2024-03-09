@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
 import { Settings } from "../utils/settings";
+import { Component } from "../utils/component";
 
-export class HostTerminal implements vscode.TerminalProfileProvider, vscode.Disposable {
+export class HostTerminal extends Component implements vscode.TerminalProfileProvider {
 
-    constructor(context: vscode.ExtensionContext) {
-        context.subscriptions.push(
-            this,
+     public override async register() {
+        super.register();
+        this.registerCommand("flatpak.openHostTerminal", this.openHostTerminalCommand);
+        this.disposables.push(
             vscode.window.registerTerminalProfileProvider("flatpak-host", this),
-            vscode.commands.registerCommand("flatpak.openHostTerminal", this.openHostTerminalCommand, this),
         );
-
     }
 
     get terminalProfile(): vscode.TerminalOptions {
@@ -34,6 +34,4 @@ export class HostTerminal implements vscode.TerminalProfileProvider, vscode.Disp
             options: this.terminalProfile,
         };
     }
-
-    dispose() { }
 }

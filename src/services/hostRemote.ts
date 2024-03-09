@@ -6,10 +6,11 @@ import path from 'path';
 import { getServerInstallDir, getVscodeUserDir } from '../utils/utils';
 import { downloadServer } from '../utils/serverInstaller';
 import { spawnHostFlatpak } from '../utils/flatpak';
+import { Component } from '../utils/component';
 
 export const REMOTE_HOST_AUTHORITY = "flatpak-host"
 
-export class HostRemote implements vscode.RemoteAuthorityResolver, vscode.Disposable {
+export class HostRemote extends Component implements vscode.RemoteAuthorityResolver, vscode.Disposable {
     private _resourceLabelDisposable?: vscode.Disposable;
     private _serverProcess?: ChildProcessWithoutNullStreams;
 
@@ -24,13 +25,13 @@ export class HostRemote implements vscode.RemoteAuthorityResolver, vscode.Dispos
         }
     };
 
-    constructor(readonly extensionContext: vscode.ExtensionContext) {
-        extensionContext.subscriptions.push(
-            this,
+    public override async register() {
+        super.register();
+        this.registerCommand("flatpak.openHostRemote", this.openHostRemoteCommand);
+        this.registerCommand("flatpak.openCurrentFolderOnHost", this.openCurrentFolderOnHostCommand);
+        this.disposables.push(
             vscode.workspace.registerRemoteAuthorityResolver(REMOTE_HOST_AUTHORITY, this),
             vscode.workspace.registerResourceLabelFormatter(this._resourceLabel),
-            vscode.commands.registerCommand("flatpak.openHostRemote", this.openHostRemoteCommand, this),
-            vscode.commands.registerCommand("flatpak.openCurrentFolderOnHost", this.openCurrentFolderOnHostCommand, this)
         );
     }
 
@@ -89,6 +90,7 @@ export class HostRemote implements vscode.RemoteAuthorityResolver, vscode.Dispos
     }
 
     dispose() {
+        super.dispose();
         this._resourceLabelDisposable?.dispose();
         this._serverProcess?.kill();
     }

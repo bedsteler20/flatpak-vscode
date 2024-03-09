@@ -7,6 +7,9 @@
     "engines": {
         "vscode": "^1.86.0"
     },
+    "os": [
+        "linux"
+    ],
     "categories": [
         "Other"
     ],
@@ -18,7 +21,8 @@
         "contribViewsRemote"
     ],
     "activationEvents": [
-        "onResolveRemoteAuthority:flatpak-host"
+        "onResolveRemoteAuthority:flatpak-host",
+        "workspaceContains:*.*.*.json"
     ],
     "repository": {
         "type": "git",

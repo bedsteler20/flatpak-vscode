@@ -5,6 +5,7 @@ import * as vscode from 'vscode';
 import { getVsCodeExec } from '../utils/vsUtils';
 import path from 'path';
 import os from 'os';
+import { Component } from '../utils/component';
 
 interface GithubRelease {
     tag_name: string;
@@ -15,18 +16,21 @@ interface GithubRelease {
 }
 
 
-export class AutoUpdater implements vscode.Disposable {
+export class AutoUpdater extends Component {
     private static readonly GITHUB_API = 'https://api.github.com/repos/bedsteler20/flatpak-vscode/releases';
 
-    private readonly currentVersion: string;
 
-    constructor(context: vscode.ExtensionContext) {
-        this.currentVersion = context.extension.packageJSON.version;
-        context.subscriptions.push(
-            this,
-            vscode.commands.registerCommand('flatpak.checkForUpdates', this.checkForUpdatesCommand, this),
-        );
+    public override async register() {
+        super.register();
+        this.registerCommand('flatpak.checkForUpdates', this.checkForUpdatesCommand);
+    }
+
+    public override async initialize() {
         this.runUpdateCheck(false);
+    }
+
+    private get currentVersion(): string { 
+        return this.extensionContext.extension.packageJSON.version;
     }
 
     public async runUpdateCheck(showUpToDate: boolean): Promise<void> {
@@ -88,10 +92,6 @@ export class AutoUpdater implements vscode.Disposable {
                 reject(err);
             });
         });
-    }
-
-    public dispose(): void {
-        // nothing to clean up
     }
 
     private checkForUpdatesCommand(): void {

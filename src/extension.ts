@@ -14,15 +14,27 @@ export let services: {
     manifestLocator?: ManifestLocator
 };
 
-export function activate(context: vscode.ExtensionContext) {
+export let components: {
+    manifestLocator?: ManifestLocator,
+    hostTerminal?: HostTerminal
+    hostRemote?: HostRemote
+    autoUpdater?: AutoUpdater
+};
+
+export async function activate(context: vscode.ExtensionContext) {
     logger.log("activate")
 
-    services = {
-        hostRemote: new HostRemote(context),
+
+    components = {
+        manifestLocator: new ManifestLocator(context),
         hostTerminal: new HostTerminal(context),
-        autoUpdater: new AutoUpdater(context),
-        manifestLocator: new ManifestLocator(context)
+        hostRemote: new HostRemote(context),
+        autoUpdater: new AutoUpdater(context)
     };
+
+    for (const component of Object.values(components)) {
+        await component.runLifecycle();
+    }
 }
 
 export function deactivate() {

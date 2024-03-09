@@ -1,23 +1,61 @@
 import * as vscode from 'vscode';
 import { logger } from '../utils/logger';
+import { Component } from '../utils/component';
 
-export class ManifestLocator implements vscode.Disposable {
+export class ManifestLocator extends Component {
     manifestFiles: vscode.Uri[] = [];
 
-    public selectedManifest: vscode.Uri | undefined;
+    private _selectedManifest: vscode.Uri | undefined;
 
-    constructor(readonly extensionContext: vscode.ExtensionContext) {
-        extensionContext.subscriptions.push(
-            this,
-            this.createFileWatcher(),
-            vscode.commands.registerCommand("flatpak.selectManifest", this.selectManifestCommand, this)
-        );
-        this.findManifests();
+    public get selectedManifest(): vscode.Uri | undefined {
+        return this._selectedManifest ?? this.manifestFiles[0];
     }
 
+    public set selectedManifest(uri: vscode.Uri | undefined) {
+        this.extensionContext.workspaceState.update("selectedManifest", this._selectedManifest);
+        this._selectedManifest = uri;
+        this.manifestChanged.fire(uri);
+    }
 
+    public override async register() {
+        super.register();
+        this.registerCommand("flatpak.selectManifest", this.selectManifestCommand);
+        
+        // Exclude .flatpak directory from file watching
+        const config = vscode.workspace.getConfiguration("files");
+        const excludes = config.get<Record<string, boolean>>("watcherExclude") ?? {};
+        excludes["**/.flatpak"] = true;
+        await config.update("watcherExclude", excludes);
+        
+    }
 
-    private async findManifests() {
+    public override async initialize() {
+        await this.findManifests(true);
+    }
+
+    public override async connectListeners() {
+        const watcher = vscode.workspace.createFileSystemWatcher('**/*.*.*.json');
+        watcher.onDidCreate(() => this.findManifests(), this);
+        watcher.onDidDelete(() => this.findManifests(), this);
+        this.disposables.push(watcher);
+    }
+
+    public override async restoreState() {
+        const savedManifest = this.extensionContext.workspaceState.get<vscode.Uri>("selectedManifest");
+        if (savedManifest && this.manifestFiles.includes(savedManifest)) {
+            logger.log("Using saved manifest:", savedManifest.fsPath);
+            this.selectedManifest = savedManifest;
+        } else {
+            logger.log("No saved manifest found");
+            if (this.manifestFiles.length > 1) {
+                this.promptSelectManifest();
+            }
+        }
+    }
+
+    public manifestChanged = new vscode.EventEmitter<vscode.Uri | undefined>();
+
+    private async findManifests(noPrompt: boolean = false) {
         const workspaceFolders = vscode.workspace.workspaceFolders;
         if (!workspaceFolders) {
             return;
@@ -30,7 +68,9 @@ export class ManifestLocator implements vscode.Disposable {
                 logger.log("Only one manifest found using:", manifestFiles[0].fsPath);
             } else if (manifestFiles.length > 1) {
                 logger.log("Multiple manifest files found:", manifestFiles.map(uri => uri.fsPath));
-                this.promptSelectManifest();
+                if (!noPrompt) {
+                    this.promptSelectManifest();
+                }
             } else {
                 logger.log("No manifest files found");
             }
@@ -64,14 +104,9 @@ export class ManifestLocator implements vscode.Disposable {
         });
     }
 
-    private createFileWatcher() {
-        const watcher = vscode.workspace.createFileSystemWatcher('**/*.*.*.[json,yaml,yml]');
-        watcher.onDidCreate(this.findManifests, this);
-        watcher.onDidDelete(this.findManifests, this);
-        return watcher;
-    }
 
     dispose() {
-
+        this.manifestChanged.dispose();
+        super.dispose();
     }
 }
