@@ -40,6 +40,14 @@
             {
                 "command": "flatpak.checkForUpdates",
                 "title": "Flatpak: Check for Extension Updates"
+            },
+            {
+                "command": "flatpak.openHostTerminal",
+                "title": "Flatpak: Open Host Terminal"
+            },
+            {
+                "command": "flatpak.selectManifest",
+                "title": "Flatpak: Select Manifest"
             }
         ],
         "resourceLabelFormatters": [
@@ -53,6 +61,12 @@
                 }
             }
         ],
+        "jsonValidation": [
+            {
+                "fileMatch": "*.*.*.json",
+                "url": "https://raw.githubusercontent.com/flatpak/flatpak-builder/main/data/flatpak-manifest.schema.json"
+            }
+        ],
         "configuration": [
             {
                 "title": "Flatpak",
@@ -61,6 +75,16 @@
                         "type": "string",
                         "$comment": "The shell to use when spawning a host terminal",
                         "default": "bash"
+                    },
+                    "bedsteler20.flatpak.useFlatpakedFlatpakBuilder": {
+                        "type": "boolean",
+                        "$comment": "Use the the flatpak version of flatpak-builder(org.flatpak.Builder) instead of the host's",
+                        "default": true
+                    },
+                    "bedsteler20.flatpak.metadataDir": {
+                        "type": "string",
+                        "$comment": "The directory to store the flatpak metadata",
+                        "default": ".flatpak"
                     }
                 }
             }

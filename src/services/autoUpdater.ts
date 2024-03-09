@@ -22,6 +22,11 @@ export class AutoUpdater implements vscode.Disposable {
 
     constructor(context: vscode.ExtensionContext) {
         this.currentVersion = context.extension.packageJSON.version;
+        context.subscriptions.push(
+            this,
+            vscode.commands.registerCommand('flatpak.checkForUpdates', this.checkForUpdatesCommand, this),
+        );
+        this.runUpdateCheck(false);
     }
 
     public async runUpdateCheck(showUpToDate: boolean): Promise<void> {
@@ -91,13 +96,5 @@ export class AutoUpdater implements vscode.Disposable {
 
     private checkForUpdatesCommand(): void {
         this.runUpdateCheck(true);
-    }
-
-    public static register(context: vscode.ExtensionContext): void {
-        const updater = new AutoUpdater(context);
-        const command = vscode.commands.registerCommand('flatpak.checkForUpdates', updater.checkForUpdatesCommand.bind(updater));
-        updater.runUpdateCheck(false);
-        context.subscriptions.push(updater);
-        context.subscriptions.push(command);
     }
 }
