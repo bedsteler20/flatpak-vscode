@@ -27,7 +27,7 @@ export class HostRemoteProvider extends RemoteFactory<string> {
       return;
     }
     vscode.commands.executeCommand("vscode.newWindow", {
-      remoteAuthority: `flatpak-host+`,
+      remoteAuthority: `flatpak-host+uwu`,
       reuseWindow: true,
     });
   }

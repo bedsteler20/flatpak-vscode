@@ -10,8 +10,8 @@ export let extensionContext: vscode.ExtensionContext;
 
 export async function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
-  const old = new HostRemote(context);
-  await old.runLifecycle();
+//   const old = new HostRemote(context);
+//   await old.runLifecycle();
 
-  context.subscriptions.push(new TaskProvider(), new TerminalProvider());
+  context.subscriptions.push(new TaskProvider(), new TerminalProvider(), new HostRemoteProvider());
 }
