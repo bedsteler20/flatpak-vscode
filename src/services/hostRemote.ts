@@ -3,10 +3,10 @@ import * as fs from 'fs';
 import { logger } from '../utils/logger';
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import path from 'path';
-import { getServerInstallDir, getVscodeUserDir } from '../utils/utils';
+import { getServerInstallDir } from '../utils/utils';
 import { downloadServer } from '../utils/serverInstaller';
-import { spawnHostFlatpak } from '../utils/flatpak';
 import { Component } from '../utils/component';
+import { Command } from '../utils/command';
 
 export const REMOTE_HOST_AUTHORITY = "flatpak-host"
 
@@ -66,25 +66,25 @@ export class HostRemote extends Component implements vscode.RemoteAuthorityResol
             logger.log("server process exists")
             return
         }
-        this._serverProcess = spawnHostFlatpak([
-            path.join(serverDir, "node"),
+        this._serverProcess = new Command(path.join(serverDir, "node"), [
             path.join(serverDir, "out", "server-main.js"),
             "--accept-server-license-terms",
             "--without-connection-token",
             "--disable-telemetry"
-
-        ])
+        ], {
+            useHost: true
+        }).spawn();
     }
 
     openCurrentFolderOnHostCommand() {
         const currentDir = vscode.workspace.workspaceFolders?.at(0)?.uri.path;
-        const url = vscode.Uri.parse(`vscode-remote://${HostRemote}+${currentDir}`)
+        const url = vscode.Uri.parse(`vscode-remote://${REMOTE_HOST_AUTHORITY}+${currentDir}`)
         vscode.commands.executeCommand("vscode.openFolder", url);
     }
 
     openHostRemoteCommand() {
         vscode.commands.executeCommand('vscode.newWindow', {
-            remoteAuthority: `${HostRemote}+`,
+            remoteAuthority: `${REMOTE_HOST_AUTHORITY}+`,
             reuseWindow: true
         });
     }

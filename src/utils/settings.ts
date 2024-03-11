@@ -1,3 +1,4 @@
+import path from "path";
 import * as vscode from "vscode";
 export class Settings {
     private static get internal() {
@@ -17,7 +18,10 @@ export class Settings {
     }
 
     public static get metadataDir(): string {
-        return (Settings.internal.get("metadataDir") as string)
-            .replace("${workspaceFolder}", Settings.workspaceFolder());
+        return path.join(Settings.workspaceFolder(), ".flatpak");
+    }
+
+    public static get mainModule(): string {
+        return Settings.internal.get("mainModule") as string;
     }
 }

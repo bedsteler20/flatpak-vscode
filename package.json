@@ -21,6 +21,7 @@
         "contribViewsRemote"
     ],
     "activationEvents": [
+        "onCommand:workbench.action.tasks.runTask",
         "onResolveRemoteAuthority:flatpak-host",
         "workspaceContains:*.*.*.json"
     ],
@@ -52,6 +53,28 @@
             {
                 "command": "flatpak.selectManifest",
                 "title": "Flatpak: Select Manifest"
+            },
+            {
+                "command": "flatpak.build",
+                "title": "Flatpak: Build"
+            },
+            {
+                "command": "flatpak.init",
+                "title": "Flatpak: Initialize Build Directory"
+            }
+        ],
+        "taskDefinitions": [
+            {
+                "type": "flatpak",
+                "required": [
+                    "target"],
+                "properties": {
+                    "target": {
+                        "type": "string",
+                        "enum": ["build", "build-init"],
+                        "description": "The task to run"
+                    }
+                }
             }
         ],
         "resourceLabelFormatters": [
@@ -85,10 +108,9 @@
                         "$comment": "Use the the flatpak version of flatpak-builder(org.flatpak.Builder) instead of the host's",
                         "default": true
                     },
-                    "bedsteler20.flatpak.metadataDir": {
+                    "bedsteler20.flatpak.mainModule": {
                         "type": "string",
-                        "$comment": "The directory to store the flatpak metadata",
-                        "default": ".flatpak"
+                        "$comment": "The main module to use when building the flatpak defaults to the last entry in the manifest"
                     }
                 }
             }
@@ -130,6 +152,7 @@
     "dependencies": {
         "follow-redirects": "^1.15.5",
         "node-fetch": "^3.3.2",
-        "tar": "^6.2.0"
+        "tar": "^6.2.0",
+        "fenv": "git+https://gitlab.gnome.org/bedsteler20/fenv-flatpak-vscode.git"
     }
 }
