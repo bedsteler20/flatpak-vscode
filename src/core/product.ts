@@ -4,9 +4,9 @@ import vscode from 'vscode';
 
 
 let vscodeProductJson: any;
-export async function getVSCodeProductJson(): Promise<ProductJson> {
+export  function getVSCodeProductJson(): Promise<ProductJson> {
     if (!vscodeProductJson) {
-        const productJsonStr = await fs.promises.readFile(path.join(vscode.env.appRoot, 'product.json'), 'utf8');
+        const productJsonStr =  fs.readFileSync(path.join(vscode.env.appRoot, 'product.json'), 'utf8');
         vscodeProductJson = JSON.parse(productJsonStr);
     }
 

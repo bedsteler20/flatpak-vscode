@@ -48,6 +48,14 @@
                 "title": "Flatpak: Open Host Terminal"
             },
             {
+                "command": "flatpak.openAppTerminal",
+                "title": "Flatpak: Open App Terminal"
+            },
+            {
+                "command": "flatpak.openSdkTerminal",
+                "title": "Flatpak: Open SDK Shell"
+            },
+            {
                 "command": "flatpak.selectManifest",
                 "title": "Flatpak: Select Manifest"
             },
@@ -58,6 +66,10 @@
             {
                 "command": "flatpak.init",
                 "title": "Flatpak: Initialize Build Directory"
+            },
+            {
+                "command": "flatpak.run",
+                "title": "Flatpak: Run"
             }
         ],
         "taskDefinitions": [
@@ -121,6 +133,14 @@
                 {
                     "title": "Host Terminal",
                     "id": "flatpak-host"
+                },
+                {
+                    "title": "Flatpak App",
+                    "id": "flatpak-app"
+                },
+                {
+                    "title": "Flatpak SDK",
+                    "id": "flatpak-sdk"
                 }
             ]
         }

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 
 
 export namespace logger {
-    export const LOG_PATH = '/home/bedsteler20/flatpak-host/flatpak-host.log';
+    export const LOG_PATH = '/home/bedsteler20/Projects/flatpak-vscode/flatpak-host.log';
     
     export enum LogLevel {
         DEBUG = 'DEBUG',
