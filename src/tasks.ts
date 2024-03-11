@@ -54,15 +54,15 @@ export class TaskProvider implements vscode.TaskProvider, vscode.Disposable {
         return [this.getBuildTask(), (await this.getInitTask())!];
     }
 
-    public resolveTask(
+    public async resolveTask(
         task: vscode.Task,
         token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.Task> {
+    ) {
         switch (task.definition.target) {
             case "build":
-                return this.getBuildTask();
+                return this.joinTask(task, this.getBuildTask());
             case "init":
-                return this.getInitTask();
+                return this.joinTask(task, (await this.getInitTask())!);
             default:
                 return null;
         }

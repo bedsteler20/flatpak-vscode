@@ -1,0 +1,3 @@
+[submodule "fenv-flatpak-vscode"]
+	path = fenv-flatpak-vscode
+	url = https://gitlab.gnome.org/bedsteler20/fenv-flatpak-vscode

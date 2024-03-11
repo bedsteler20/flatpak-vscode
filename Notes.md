@@ -4,3 +4,7 @@ flatpak run --app-path=${workspaceFolder}/.flatpak/repo/files --command=${server
 ```
 
 app path will be read olny to vscode but flatpak builder will update the contence of the folder from outside the flatpak envierment. 
+
+# TODO
+- [ ] Add flatpak remote to vscode
+- [ ] Add sdk installer

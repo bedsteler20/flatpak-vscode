@@ -67,11 +67,15 @@
             {
                 "type": "flatpak",
                 "required": [
-                    "target"],
+                    "target"
+                ],
                 "properties": {
                     "target": {
                         "type": "string",
-                        "enum": ["build", "build-init"],
+                        "enum": [
+                            "build",
+                            "build-init"
+                        ],
                         "description": "The task to run"
                     }
                 }
@@ -137,7 +141,7 @@
     "devDependencies": {
         "@types/follow-redirects": "^1.14.4",
         "@types/mocha": "^10.0.6",
-        "@types/node": "18.x",
+        "@types/node": "^18.19.22",
         "@types/node-fetch": "^2.6.11",
         "@types/tar": "^6.1.11",
         "@typescript-eslint/eslint-plugin": "^7.0.2",
@@ -150,9 +154,9 @@
         "vscode-dts": "^0.3.3"
     },
     "dependencies": {
+        "fenv": "git+https://gitlab.gnome.org/bedsteler20/fenv-flatpak-vscode.git",
         "follow-redirects": "^1.15.5",
         "node-fetch": "^3.3.2",
-        "tar": "^6.2.0",
-        "fenv": "git+https://gitlab.gnome.org/bedsteler20/fenv-flatpak-vscode.git"
+        "tar": "^6.2.0"
     }
 }
