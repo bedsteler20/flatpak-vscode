@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import { components } from "../extension";
 import { Settings } from "./settings";
 import path from "path";
 import fs from "fs";
