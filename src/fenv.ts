@@ -47,11 +47,8 @@ export async function pickManifest() {
 export function fenv(args: string[]): vscode.ShellExecution {
     const fenvPath = path.join(
         extensionContext.extensionPath,
-        "node_modules",
-        "fenv",
-        "target",
-        "release",
-        "fenv"
+        "out",
+        `fenv-${process.arch}`
     );
 
     if (process.env.FLATPAK_ID) {

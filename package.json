@@ -13,9 +13,6 @@
     "categories": [
         "Other"
     ],
-    "extensionKind": [
-        "ui"
-    ],
     "enabledApiProposals": [
         "resolvers",
         "contribViewsRemote"
@@ -130,8 +127,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "compile": "node ./scripts/esbuild.mjs",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
         "test": "vscode-test",
