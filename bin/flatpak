@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# This script is a wrapper around flatpak that will run flatpak on the host
+# system when in a flatpak sandbox
+
+if [ -f /.flatpak-info ]; then
+    # We are in a flatpak sandbox
+    exec /usr/bin/flatpak-spawn --watch-bus --host flatpak "$@"
+else
+    # We are not in a flatpak sandbox
+    exec /usr/bin/flatpak "$@"
+fi

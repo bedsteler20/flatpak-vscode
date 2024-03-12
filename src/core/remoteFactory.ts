@@ -8,19 +8,22 @@ import fs from "fs";
 import { getVSCodeProductJson } from "./product";
 import { https } from "follow-redirects";
 import tar from "tar";
+import * as remoteApi from "vscode-remote-shim";
 
-export abstract class RemoteFactory<T> extends WithDisposable implements vscode.RemoteAuthorityResolver {
+export abstract class RemoteFactory<T> extends WithDisposable implements remoteApi.RemoteAuthorityResolver {
   private _resourceLabelDisposable?: vscode.Disposable;
   private _serverProcess?: ChildProcess;
 
   public readonly installDir: string = path.join(
     extensionContext.globalStorageUri.fsPath,
     "servers",
-    vscode.env.appCommit!
+    remoteApi.getAppCommit()!
   );
 
-  protected abstract runServer(): Promise<ChildProcess>;
-  protected abstract getResourceLabel(data?: T): vscode.ResourceLabelFormatter;
+  protected path?: string;
+
+  protected abstract runServer(data: T): Promise<ChildProcess>;
+  protected abstract getResourceLabel(data?: T): remoteApi.ResourceLabelFormatter;
   protected abstract parseData(data: string): T;
 
   constructor(public readonly authority: string) {
@@ -28,12 +31,13 @@ export abstract class RemoteFactory<T> extends WithDisposable implements vscode.
     logger.log("RemoteFactory constructor");
     logger.log("Authority: " + authority);
     this.disposables.push(
-      vscode.workspace.registerRemoteAuthorityResolver("flatpak-host", this),
-      vscode.workspace.registerResourceLabelFormatter(this.getResourceLabel())
+      remoteApi.registerRemoteAuthorityResolver(authority, this),
+      remoteApi.registerResourceLabelFormatter(this.getResourceLabel())
     );
   }
 
   public resolve(authority: string) {
+    logger.log("Path:", this.path);
     logger.log(`Resolving authority: ${authority}`);
     const data = this.parseData(authority.split("+")[1]);
 
@@ -45,12 +49,15 @@ export abstract class RemoteFactory<T> extends WithDisposable implements vscode.
       },
       async () => {
         this._resourceLabelDisposable?.dispose();
-        this._resourceLabelDisposable = vscode.workspace.registerResourceLabelFormatter(this.getResourceLabel(data));
+        this._resourceLabelDisposable = remoteApi.registerResourceLabelFormatter(this.getResourceLabel(data));
 
         await this.downloadServer();
-        this._serverProcess = await this.runServer();
+        if (this._serverProcess === undefined || this._serverProcess.killed) {
+          logger.log("Starting server process");
+          this._serverProcess = await this.runServer(data);
+        }
 
-        const resolvedResult: vscode.ResolverResult = new vscode.ResolvedAuthority("localhost", 8000);
+        const resolvedResult: remoteApi.ResolverResult = new remoteApi.ResolvedAuthority("localhost", 8000);
 
         return resolvedResult;
       }
@@ -58,7 +65,8 @@ export abstract class RemoteFactory<T> extends WithDisposable implements vscode.
   }
 
   async getCanonicalURI(uri: vscode.Uri) {
-    logger.log("getCanonicalURI");
+    this.path = uri.path;
+    logger.log("getCanonicalURI", JSON.stringify(uri.toJSON(), null, 2));
     return vscode.Uri.parse(uri.path);
   }
 
@@ -80,6 +88,8 @@ export abstract class RemoteFactory<T> extends WithDisposable implements vscode.
       switch (product.applicationName) {
         case "vscode":
         case "vscode-insiders":
+        case "code":
+        case "code-insiders":
           url =
             "https://vscode.download.prss.microsoft.com/dbazure/download/${quality}/${commit}/vscode-server-${os}-${arch}.tar.gz";
           break;

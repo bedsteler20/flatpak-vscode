@@ -11,7 +11,7 @@
         "linux"
     ],
     "extensionKind": [
-        "ui"
+        "ui","workspace"
     ],
     "categories": [
         "Other"
@@ -23,6 +23,7 @@
     "activationEvents": [
         "onCommand:workbench.action.tasks.runTask",
         "onResolveRemoteAuthority:flatpak-host",
+        "onResolveRemoteAuthority:flatpak-app",
         "workspaceContains:*.*.*.json"
     ],
     "repository": {
@@ -73,6 +74,10 @@
             {
                 "command": "flatpak.run",
                 "title": "Flatpak: Run"
+            },
+            {
+                "command": "flatpak.openAppRemote",
+                "title": "Flatpak: Connect to App"
             }
         ],
         "taskDefinitions": [
@@ -97,6 +102,15 @@
             {
                 "label": "flatpak-host",
                 "authority": "flatpak-host+*",
+                "formatting": {
+                    "label": "${path}",
+                    "separator": " - ",
+                    "sublabel": "${rootName}"
+                }
+            },
+            {
+                "label": "flatpak-app",
+                "authority": "flatpak-app+*",
                 "formatting": {
                     "label": "${path}",
                     "separator": " - ",
