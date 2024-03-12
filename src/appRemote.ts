@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "child_process";
-import { ResourceLabelFormatter } from "vscode-remote-shim";
+import { ResourceLabelFormatter } from "vscode";
 import { RemoteFactory } from "./core/remoteFactory";
 import { fenv } from "./fenv";
 import path from "path";

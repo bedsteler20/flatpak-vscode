@@ -8,22 +8,21 @@ import fs from "fs";
 import { getVSCodeProductJson } from "./product";
 import { https } from "follow-redirects";
 import tar from "tar";
-import * as remoteApi from "vscode-remote-shim";
 
-export abstract class RemoteFactory<T> extends WithDisposable implements remoteApi.RemoteAuthorityResolver {
+export abstract class RemoteFactory<T> extends WithDisposable implements vscode.RemoteAuthorityResolver {
   private _resourceLabelDisposable?: vscode.Disposable;
   private _serverProcess?: ChildProcess;
 
   public readonly installDir: string = path.join(
     extensionContext.globalStorageUri.fsPath,
     "servers",
-    remoteApi.getAppCommit()!
+    vscode.env.appCommit!
   );
 
   protected path?: string;
 
   protected abstract runServer(data: T): Promise<ChildProcess>;
-  protected abstract getResourceLabel(data?: T): remoteApi.ResourceLabelFormatter;
+  protected abstract getResourceLabel(data?: T): vscode.ResourceLabelFormatter;
   protected abstract parseData(data: string): T;
 
   constructor(public readonly authority: string) {
@@ -31,8 +30,8 @@ export abstract class RemoteFactory<T> extends WithDisposable implements remoteA
     logger.log("RemoteFactory constructor");
     logger.log("Authority: " + authority);
     this.disposables.push(
-      remoteApi.registerRemoteAuthorityResolver(authority, this),
-      remoteApi.registerResourceLabelFormatter(this.getResourceLabel())
+      vscode.workspace.registerRemoteAuthorityResolver(authority, this),
+      vscode.workspace.registerResourceLabelFormatter(this.getResourceLabel())
     );
   }
 
@@ -49,7 +48,7 @@ export abstract class RemoteFactory<T> extends WithDisposable implements remoteA
       },
       async () => {
         this._resourceLabelDisposable?.dispose();
-        this._resourceLabelDisposable = remoteApi.registerResourceLabelFormatter(this.getResourceLabel(data));
+        this._resourceLabelDisposable = vscode.workspace.registerResourceLabelFormatter(this.getResourceLabel(data));
 
         await this.downloadServer();
         if (this._serverProcess === undefined || this._serverProcess.killed) {
@@ -57,7 +56,7 @@ export abstract class RemoteFactory<T> extends WithDisposable implements remoteA
           this._serverProcess = await this.runServer(data);
         }
 
-        const resolvedResult: remoteApi.ResolverResult = new remoteApi.ResolvedAuthority("localhost", 8000);
+        const resolvedResult: vscode.ResolverResult = new vscode.ResolvedAuthority("127.0.0.1", 8000);
 
         return resolvedResult;
       }

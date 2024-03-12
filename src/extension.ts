@@ -7,7 +7,8 @@ import { HostRemoteProvider } from "./hostRemote";
 import { HostRemote } from "./services/hostRemote";
 import { AppRemote } from "./appRemote";
 import { logger } from "./utils/logger";
-import * as remoteApi from "vscode-remote-shim";
+import fs from "fs/promises";
+import path from "path";
 
 export let extensionContext: vscode.ExtensionContext;
 
@@ -18,7 +19,6 @@ export async function activate(context: vscode.ExtensionContext) {
   console.log("Extension activated UwU");
   //   const old = new HostRemote(context);
   //   await old.runLifecycle();
-  await remoteApi.activate();
   context.subscriptions.push(
     new TaskProvider(),
     new TerminalProvider(),
