@@ -56,9 +56,14 @@ export abstract class RemoteFactory<T> extends WithDisposable implements vscode.
           this._serverProcess = await this.runServer(data);
         }
 
-        const resolvedResult: vscode.ResolverResult = new vscode.ResolvedAuthority("127.0.0.1", 8000);
-
-        return resolvedResult;
+        return await new Promise<vscode.ResolverResult>((resolve) => {
+          this._serverProcess!.stdout?.on("data", (data) => {
+            if (data.toString().includes("Extension host agent started")) {
+              logger.log("Server started");
+              resolve(new vscode.ResolvedAuthority("localhost", 8000));
+            }
+          });
+        });
       }
     );
   }

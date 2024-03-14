@@ -69,3 +69,4 @@ export function fenv(args: string[]): vscode.ShellExecution {
     return new vscode.ShellExecution(fenvPath, args);
   }
 }
+

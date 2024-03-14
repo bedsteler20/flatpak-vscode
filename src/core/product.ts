@@ -21,6 +21,7 @@ export interface ProductJson {
     release?: string; // vscodium-like specific
     serverApplicationName: string;
     serverDataFolderName: string;
+    dataFolderName: string;
     serverDownloadUrlTemplate?: string; // vscodium-like specific
 }
 
