@@ -1,195 +1,196 @@
 {
-    "name": "flatpak",
-    "displayName": "flatpak",
-    "description": "",
-    "version": "0.0.4",
-    "publisher": "bedsteler20",
-    "engines": {
-        "vscode": "^1.86.0"
-    },
-    "os": [
-        "linux"
+  "name": "flatpak",
+  "displayName": "flatpak",
+  "description": "",
+  "version": "0.0.4",
+  "publisher": "bedsteler20",
+  "engines": {
+    "vscode": "^1.86.0"
+  },
+  "os": [
+    "linux"
+  ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "enabledApiProposals": [
+    "resolvers",
+    "contribViewsRemote"
+  ],
+  "activationEvents": [
+    "onCommand:workbench.action.tasks.runTask",
+    "onResolveRemoteAuthority:flatpak-host",
+    "onResolveRemoteAuthority:flatpak-app",
+    "workspaceContains:*.*.*.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bedsteler20/flatpak-vscode.git"
+  },
+  "license": "GPL-3.0-only",
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "flatpak.openHostRemote",
+        "title": "Flatpak: Connect to Host OS"
+      },
+      {
+        "command": "flatpak.openCurrentFolderOnHost",
+        "title": "Flatpak: Open Current Folder on Host",
+        "enablement": "workspaceFolderCount > 0"
+      },
+      {
+        "command": "flatpak.checkForUpdates",
+        "title": "Flatpak: Check for Extension Updates"
+      },
+      {
+        "command": "flatpak.openHostTerminal",
+        "title": "Flatpak: Open Host Terminal"
+      },
+      {
+        "command": "flatpak.openAppTerminal",
+        "title": "Flatpak: Open App Terminal"
+      },
+      {
+        "command": "flatpak.openSdkTerminal",
+        "title": "Flatpak: Open SDK Shell"
+      },
+      {
+        "command": "flatpak.selectManifest",
+        "title": "Flatpak: Select Manifest"
+      },
+      {
+        "command": "flatpak.build",
+        "title": "Flatpak: Build"
+      },
+      {
+        "command": "flatpak.init",
+        "title": "Flatpak: Initialize Build Directory"
+      },
+      {
+        "command": "flatpak.run",
+        "title": "Flatpak: Run"
+      },
+      {
+        "command": "flatpak.openAppRemote",
+        "title": "Flatpak: Connect to App"
+      }
     ],
-    "extensionKind": [
-        "ui","workspace"
-    ],
-    "categories": [
-        "Other"
-    ],
-    "enabledApiProposals": [
-        "resolvers",
-        "contribViewsRemote"
-    ],
-    "activationEvents": [
-        "onCommand:workbench.action.tasks.runTask",
-        "onResolveRemoteAuthority:flatpak-host",
-        "onResolveRemoteAuthority:flatpak-app",
-        "workspaceContains:*.*.*.json"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/bedsteler20/flatpak-vscode.git"
-    },
-    "license": "GPL-3.0-only",
-    "main": "./out/extension.js",
-    "contributes": {
-        "commands": [
-            {
-                "command": "flatpak.openHostRemote",
-                "title": "Flatpak: Connect to Host OS"
-            },
-            {
-                "command": "flatpak.openCurrentFolderOnHost",
-                "title": "Flatpak: Open Current Folder on Host",
-                "enablement": "workspaceFolderCount > 0"
-            },
-            {
-                "command": "flatpak.checkForUpdates",
-                "title": "Flatpak: Check for Extension Updates"
-            },
-            {
-                "command": "flatpak.openHostTerminal",
-                "title": "Flatpak: Open Host Terminal"
-            },
-            {
-                "command": "flatpak.openAppTerminal",
-                "title": "Flatpak: Open App Terminal"
-            },
-            {
-                "command": "flatpak.openSdkTerminal",
-                "title": "Flatpak: Open SDK Shell"
-            },
-            {
-                "command": "flatpak.selectManifest",
-                "title": "Flatpak: Select Manifest"
-            },
-            {
-                "command": "flatpak.build",
-                "title": "Flatpak: Build"
-            },
-            {
-                "command": "flatpak.init",
-                "title": "Flatpak: Initialize Build Directory"
-            },
-            {
-                "command": "flatpak.run",
-                "title": "Flatpak: Run"
-            },
-            {
-                "command": "flatpak.openAppRemote",
-                "title": "Flatpak: Connect to App"
-            }
+    "taskDefinitions": [
+      {
+        "type": "flatpak",
+        "required": [
+          "target"
         ],
-        "taskDefinitions": [
-            {
-                "type": "flatpak",
-                "required": [
-                    "target"
-                ],
-                "properties": {
-                    "target": {
-                        "type": "string",
-                        "enum": [
-                            "build",
-                            "build-init"
-                        ],
-                        "description": "The task to run"
-                    }
-                }
-            }
-        ],
-        "resourceLabelFormatters": [
-            {
-                "label": "flatpak-host",
-                "authority": "flatpak-host+*",
-                "formatting": {
-                    "label": "${path}",
-                    "separator": " - ",
-                    "sublabel": "${rootName}"
-                }
-            },
-            {
-                "label": "flatpak-app",
-                "authority": "flatpak-app+*",
-                "formatting": {
-                    "label": "${path}",
-                    "separator": " - ",
-                    "sublabel": "${rootName}"
-                }
-            }
-        ],
-        "jsonValidation": [
-            {
-                "fileMatch": "*.*.*.json",
-                "url": "https://raw.githubusercontent.com/flatpak/flatpak-builder/main/data/flatpak-manifest.schema.json"
-            }
-        ],
-        "configuration": [
-            {
-                "title": "Flatpak",
-                "properties": {
-                    "bedsteler20.flatpak.hostShell": {
-                        "type": "string",
-                        "$comment": "The shell to use when spawning a host terminal",
-                        "default": "bash"
-                    },
-                    "bedsteler20.flatpak.useFlatpakedFlatpakBuilder": {
-                        "type": "boolean",
-                        "$comment": "Use the the flatpak version of flatpak-builder(org.flatpak.Builder) instead of the host's",
-                        "default": true
-                    },
-                    "bedsteler20.flatpak.mainModule": {
-                        "type": "string",
-                        "$comment": "The main module to use when building the flatpak defaults to the last entry in the manifest"
-                    }
-                }
-            }
-        ],
-        "terminal": {
-            "profiles": [
-                {
-                    "title": "Host Terminal",
-                    "id": "flatpak-host"
-                },
-                {
-                    "title": "Flatpak App",
-                    "id": "flatpak-app"
-                },
-                {
-                    "title": "Flatpak SDK",
-                    "id": "flatpak-sdk"
-                }
-            ]
+        "properties": {
+          "target": {
+            "type": "string",
+            "enum": [
+              "build",
+              "build-init"
+            ],
+            "description": "The task to run"
+          }
         }
-    },
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "node ./scripts/esbuild.mjs",
-        "pretest": "npm run compile && npm run lint",
-        "lint": "eslint src --ext ts",
-        "test": "vscode-test",
-        "postinstall": "npm run update-dts",
-        "update-dts": "npx vscode-dts dev && npx vscode-dts main"
-    },
-    "devDependencies": {
-        "@types/follow-redirects": "^1.14.4",
-        "@types/mocha": "^10.0.6",
-        "@types/node": "^18.19.22",
-        "@types/node-fetch": "^2.6.11",
-        "@types/tar": "^6.1.11",
-        "@typescript-eslint/eslint-plugin": "^7.0.2",
-        "@typescript-eslint/parser": "^7.0.2",
-        "@vscode/test-cli": "^0.0.6",
-        "@vscode/test-electron": "^2.3.9",
-        "esbuild": "^0.20.1",
-        "eslint": "^8.56.0",
-        "semantic-release": "^23.0.2",
-        "typescript": "^5.3.3",
-        "vscode-dts": "^0.3.3"
-    },
-    "dependencies": {
-        "follow-redirects": "^1.15.5",
-        "node-fetch": "^3.3.2",
-        "tar": "^6.2.0"
+      }
+    ],
+    "resourceLabelFormatters": [
+      {
+        "label": "flatpak-host",
+        "authority": "flatpak-host+*",
+        "formatting": {
+          "label": "${path}",
+          "separator": " - ",
+          "sublabel": "${rootName}"
+        }
+      },
+      {
+        "label": "flatpak-app",
+        "authority": "flatpak-app+*",
+        "formatting": {
+          "label": "${path}",
+          "separator": " - ",
+          "sublabel": "${rootName}"
+        }
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "*.*.*.json",
+        "url": "https://raw.githubusercontent.com/flatpak/flatpak-builder/main/data/flatpak-manifest.schema.json"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Flatpak",
+        "properties": {
+          "bedsteler20.flatpak.hostShell": {
+            "type": "string",
+            "$comment": "The shell to use when spawning a host terminal",
+            "default": "bash"
+          },
+          "bedsteler20.flatpak.useFlatpakedFlatpakBuilder": {
+            "type": "boolean",
+            "$comment": "Use the the flatpak version of flatpak-builder(org.flatpak.Builder) instead of the host's",
+            "default": true
+          },
+          "bedsteler20.flatpak.mainModule": {
+            "type": "string",
+            "$comment": "The main module to use when building the flatpak defaults to the last entry in the manifest"
+          }
+        }
+      }
+    ],
+    "terminal": {
+      "profiles": [
+        {
+          "title": "Host Terminal",
+          "id": "flatpak-host"
+        },
+        {
+          "title": "Flatpak App",
+          "id": "flatpak-app"
+        },
+        {
+          "title": "Flatpak SDK",
+          "id": "flatpak-sdk"
+        }
+      ]
     }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "node ./scripts/esbuild.mjs",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test",
+    "postinstall": "npm run update-dts",
+    "update-dts": "npx vscode-dts dev && npx vscode-dts main"
+  },
+  "devDependencies": {
+    "@types/follow-redirects": "^1.14.4",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^18.19.22",
+    "@types/node-fetch": "^2.6.11",
+    "@types/tar": "^6.1.11",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "esbuild": "^0.20.1",
+    "eslint": "^8.56.0",
+    "semantic-release": "^23.0.2",
+    "typescript": "^5.3.3",
+    "vscode-dts": "^0.3.3"
+  },
+  "dependencies": {
+    "follow-redirects": "^1.15.5",
+    "node-fetch": "^3.3.2",
+    "tar": "^6.2.0"
+  }
 }

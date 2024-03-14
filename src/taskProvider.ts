@@ -53,7 +53,8 @@ export class TaskProvider extends WithDisposable implements vscode.TaskProvider 
   public async resolveTask(task: vscode.Task) {
     switch (task.definition.target) {
       case "build":
-        return joinTask(task, await this.buildTask.fullTask());
+        const tsk = joinTask(task, await this.buildTask.fullTask());
+        return tsk;
       case "init":
         return joinTask(task, await this.initTask.fullTask());
       case "run":

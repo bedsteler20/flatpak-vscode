@@ -61,7 +61,7 @@ export async function pickManifest(): Promise<string | undefined> {
  * @returns A `vscode.ShellExecution` object representing the execution of the fenv command.
  */
 export function fenv(args: string[]): vscode.ShellExecution {
-  const fenvPath = path.join(extensionContext.extensionPath, "out", `fenv-${process.arch}`);
+  const fenvPath = path.join(extensionContext.extensionPath, "out", `fenv`);
 
   if (process.env.FLATPAK_ID) {
     return new vscode.ShellExecution("flatpak-spawn", ["--host", "--watch-bus", fenvPath, ...args]);
