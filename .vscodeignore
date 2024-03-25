@@ -1,5 +1,8 @@
 **/*
 !package.json
 !package-lock.json
+!README.md
+!CHANGELOG.md
+!LICENSE.md
 !out/**/*
 !bin/**/*

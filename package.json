@@ -164,7 +164,6 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
     "compile": "node ./scripts/esbuild.mjs",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
@@ -174,6 +173,7 @@
   },
   "devDependencies": {
     "@types/follow-redirects": "^1.14.4",
+    "@types/gulp": "^4.0.17",
     "@types/mocha": "^10.0.6",
     "@types/node": "^18.19.22",
     "@types/node-fetch": "^2.6.11",
@@ -184,6 +184,7 @@
     "@vscode/test-electron": "^2.3.9",
     "esbuild": "^0.20.1",
     "eslint": "^8.56.0",
+    "gulp": "^4.0.2",
     "semantic-release": "^23.0.2",
     "typescript": "^5.3.3",
     "vscode-dts": "^0.3.3"
